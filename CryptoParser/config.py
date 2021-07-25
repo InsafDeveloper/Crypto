@@ -186,3 +186,7 @@ binance_courses_to_usdt_layout = {
     'BNB': 'CURRENT_PRICE',
     'USDT': 'CURRENT_PRICE'
 }
+
+telegram_bot_token = '1936049354:AAHs69sW1m7vzP9n43SZ6ovC_eJlIDhWNJE'
+channel_chat_id_plus1 = '-1001571027081'
+channel_chat_id_under1 = '-1001591167204'
