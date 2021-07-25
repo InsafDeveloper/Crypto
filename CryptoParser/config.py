@@ -98,7 +98,7 @@ crypto_names = {
     '19': 'BNB'
 }
 
-best_courses_layout = {
+bestchange_best_courses_layout = {
     '149': ['PAY_METHOD', 'PLATFORM_ID', 1.7976931348623157e+308],
     '93': ['PAY_METHOD', 'PLATFORM_ID', 1.7976931348623157e+308],
     '99': ['PAY_METHOD', 'PLATFORM_ID', 1.7976931348623157e+308],
@@ -140,4 +140,49 @@ best_courses_layout = {
     '139': ['PAY_METHOD', 'PLATFORM_ID', 1.7976931348623157e+308],
     '185': ['PAY_METHOD', 'PLATFORM_ID', 1.7976931348623157e+308],
     '19': ['PAY_METHOD', 'PLATFORM_ID', 1.7976931348623157e+308]
+}
+
+binance_courses_to_usdt_layout = {
+    'XMR': 'CURRENT_PRICE',
+    'BTC': 'CURRENT_PRICE',
+    'LTC': 'CURRENT_PRICE',
+    'XLM': 'CURRENT_PRICE',
+    'ETC': 'CURRENT_PRICE',
+    'ZEC': 'CURRENT_PRICE',
+    'DOT': 'CURRENT_PRICE',
+    'QTUM': 'CURRENT_PRICE',
+    'BUSD': 'CURRENT_PRICE',
+    'DASH': 'CURRENT_PRICE',
+    'DOGE': 'CURRENT_PRICE',
+    'DAI': 'CURRENT_PRICE',
+    'BCH': 'CURRENT_PRICE',
+    'BTG': 'CURRENT_PRICE',
+    'TUSD': 'CURRENT_PRICE',
+    'PAX': 'CURRENT_PRICE',
+    'XEM': 'CURRENT_PRICE',
+    'REP': 'CURRENT_PRICE',
+    'NEO': 'CURRENT_PRICE',
+    'EOS': 'CURRENT_PRICE',
+    'LSK': 'CURRENT_PRICE',
+    'ADA': 'CURRENT_PRICE',
+    'WAVES': 'CURRENT_PRICE',
+    'OMG': 'CURRENT_PRICE',
+    'XVG': 'CURRENT_PRICE',
+    'ZRX': 'CURRENT_PRICE',
+    'ICX': 'CURRENT_PRICE',
+    'KMD': 'CURRENT_PRICE',
+    'BTT': 'CURRENT_PRICE',
+    'BAT': 'CURRENT_PRICE',
+    'ONT': 'CURRENT_PRICE',
+    'LINK': 'CURRENT_PRICE',
+    'ATOM': 'CURRENT_PRICE',
+    'XTZ': 'CURRENT_PRICE',
+    'UNI': 'CURRENT_PRICE',
+    'RVN': 'CURRENT_PRICE',
+    'SOL': 'CURRENT_PRICE',
+    'VET': 'CURRENT_PRICE',
+    'ETH': 'CURRENT_PRICE',
+    'TRX': 'CURRENT_PRICE',
+    'BNB': 'CURRENT_PRICE',
+    'USDT': 'CURRENT_PRICE'
 }
