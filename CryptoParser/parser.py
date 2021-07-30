@@ -8,15 +8,16 @@ import copy
 from datetime import datetime
 
 from config import pay_method_ids, pay_method_names, crypto_ids, crypto_names, bestchange_best_courses_layout, \
-    binance_courses_to_usdt_layout, telegram_bot_token, channel_chat_id_plus1, channel_chat_id_under1
+    binance_courses_to_usdt_layout, telegram_bot_token, channel_chat_id_plus1, channel_chat_id_under1, bestchange_links, \
+    binance_links
 
 import logging
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types import ParseMode
+from aiogram.utils.markdown import link
 
 
 async def main():
-    startTime = datetime.now()
-
     # Configure logging
     logging.basicConfig(level=logging.INFO)
 
@@ -26,6 +27,7 @@ async def main():
 
     while True:
         try:
+            startTime = datetime.now()
             tasks = [asyncio.create_task(bestchange_get_courses()), asyncio.create_task(binance_get_courses())]
             L = await asyncio.gather(*tasks)
             print(L)
@@ -41,20 +43,32 @@ async def main():
 
 
 async def telegram_send_messages(profit_texts, bot):
+    profits_under1 = ""
+    profits_plus1 = ""
     for profit_text in profit_texts:
-        profit = float(profit_text.split("Profit: ")[1][:-2])
-        if profit > 0.6 and profit < 1:
-            await telegram_send_messages_to_under1(profit_text, bot)
-        elif profit > 1:
-            await telegram_send_messages_to_plus1(profit_text, bot)
+        try:
+            profit = float(profit_text.split("Profit: ")[1][:-2])
+            if 0.5 < profit < 1:
+                profits_under1 += profit_text + "\n\n"
+            elif profit > 1:
+                profits_plus1 += profit_text + "\n\n"
+        except Exception:
+            print("Ошибка: получение профитов")
+    try:
+        if profits_under1 != "":
+            await telegram_send_messages_to_under1(profits_under1, bot)
+        if profits_plus1 != "":
+            await telegram_send_messages_to_plus1(profits_plus1, bot)
+    except Exception:
+        print("Ошибка: отправка сообщения в бот")
 
 
 async def telegram_send_messages_to_under1(profit_text, bot):
-    await bot.send_message(channel_chat_id_under1, text=profit_text)
+    await bot.send_message(channel_chat_id_under1, text=profit_text, parse_mode=ParseMode.MARKDOWN)
 
 
 async def telegram_send_messages_to_plus1(profit_text, bot):
-    await bot.send_message(channel_chat_id_plus1, text=profit_text)
+    await bot.send_message(channel_chat_id_plus1, text=profit_text, parse_mode=ParseMode.MARKDOWN)
 
 
 async def check_profit(bestchange_best_courses, binance_courses):
@@ -68,14 +82,17 @@ async def check_profit(bestchange_best_courses, binance_courses):
         binance_price = binance_courses[crypto_name]
 
         cross_course = bestchange_price / binance_price
+        print(crypto_name + str(cross_course) + "   " + str(usdt_course))
+
+        # '[<Ваш текст>](<Ссылка>)'
 
         if cross_course < usdt_course:
-            profit = round((usdt_course / cross_course - 1) * 100, 3)
-            if profit > 0.6:
-                text = f"Bestchange: {bestchange_pay_method}->{crypto_name} | Отдаем {bestchange_price} = Получаем 1 {crypto_name}\n" \
-                       f"Binance: {crypto_name}->USDT | Отдаем 1 {crypto_name} = Получаем {binance_price} USDT\n" \
+            profit = round((usdt_course / cross_course - 1) * 100, 2)
+            if profit > 0.5:
+                text = f"{link('Bestchange', bestchange_links[bestchange_pay_method][crypto_name])}: {bestchange_pay_method} -> {crypto_name} | Отдаем {bestchange_price} = Получаем 1 {crypto_name}\n" \
+                       f"{link('Binance', binance_links[crypto_name])}: {crypto_name} -> USDT | Отдаем 1 {crypto_name} = Получаем {binance_price} USDT\n" \
                        f"Cross-Course для USDT = {cross_course}\n" \
-                       f"Binance-Course для USDT = {usdt_course}\n" \
+                       f"{link('Binance-Course', binance_links['USDT'])} для USDT = {usdt_course}\n" \
                        f"Profit: {profit}%\n"
 
                 profit_texts.append(text)
