@@ -1,4 +1,6 @@
 import io
+import socket
+import urllib
 from zipfile import ZipFile
 
 import aiohttp
@@ -6,6 +8,8 @@ import asyncio
 import copy
 
 from datetime import datetime
+
+import requests
 
 from config import pay_method_ids, pay_method_names, crypto_ids, crypto_names, bestchange_best_courses_layout, \
     binance_courses_to_usdt_layout, telegram_bot_token, channel_chat_id_plus1, channel_chat_id_under1, bestchange_links, \
@@ -81,6 +85,7 @@ async def check_profit(bestchange_best_courses, binance_courses):
         bestchange_price = bestchange_best_courses[crypto_id][2]
         binance_price = binance_courses[crypto_name]
 
+
         cross_course = bestchange_price / binance_price
         print(crypto_name + str(cross_course) + "   " + str(usdt_course))
 
@@ -88,7 +93,7 @@ async def check_profit(bestchange_best_courses, binance_courses):
 
         if cross_course < usdt_course:
             profit = round((usdt_course / cross_course - 1) * 100, 2)
-            if profit > 0.5:
+            if profit > 0.5 and bestchange_pay_method == "QIWI RUB":
                 text = f"{link('Bestchange', bestchange_links[bestchange_pay_method][crypto_name])}: {bestchange_pay_method} -> {crypto_name} | Отдаем {bestchange_price} = Получаем 1 {crypto_name}\n" \
                        f"{link('Binance', binance_links[crypto_name])}: {crypto_name} -> USDT | Отдаем 1 {crypto_name} = Получаем {binance_price} USDT\n" \
                        f"Cross-Course для USDT = {cross_course}\n" \
@@ -115,6 +120,38 @@ async def bestchange_get_courses():
 
 async def bestchange_get_bmrates():  # получение и разархивироание файла bm_rates.dat, содержащее все текущие курсы
     try:
+        #startTime = datetime.now()
+        #r = urllib.request.urlopen("http://api.bestchange.ru/info.zip")
+
+
+        #url = "http://api.bestchange.ru/info.zip"
+        # NO HTTP URLS PLEASE!!!!!
+        #server = url.split("/")[0]
+        #args = url.replace(server, "")
+        #returndata = str()
+        #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #s.connect((server, 80))  # lets connect :p
+
+        #s.send("GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n" % (args, server))  # simple http request
+        #while 1:
+         #   data = s.recv(1024)  # buffer
+        #    if not data: break
+        #    returndata = returndata + data
+        #s.close()
+        #data = returndata.split("\n\r")[1]
+
+        #print(data)
+
+        #print("время загрузки зип: " + str(datetime.now() - startTime))
+        #print("ZIP DOWNLOADED SUCCESFUL")
+
+        #with r, ZipFile(io.BytesIO(r.read())) as archive:
+        #    print("время открытия зип: " + str(datetime.now() - startTime))
+        #    print("ARCHIVE OPENED SUCCESFUL")
+        #    for member in archive.infolist():
+        #        if member.filename == "bm_rates.dat":
+        #                return await open_bmrates(archive, member)
+
 
         startTime = datetime.now()
         async with aiohttp.ClientSession() as session:
@@ -130,7 +167,7 @@ async def bestchange_get_bmrates():  # получение и разархиви�
                     print("ARCHIVE OPENED SUCCESFUL")
                     for member in archive.infolist():
                         if member.filename == "bm_rates.dat":
-                            return await open_bmrates(archive, member)
+                           return await open_bmrates(archive, member)
     except Exception:
         print("Ошибка в загрузке или открытии ZIP-файла")
 
